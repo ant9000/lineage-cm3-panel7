@@ -1,0 +1,83 @@
+# Kernel
+kernel=zImage
+
+# Ramdisk
+gpio=21=ip,pu
+[gpio21=1]
+initramfs ramdisk.img followkernel
+[gpio21=0]
+initramfs ramdisk-recovery.img followkernel
+[all]
+
+# Boot device
+dtoverlay=android-sdcard
+
+# RPI display/touchscreen
+dtoverlay=rpi-backlight
+
+##### Acmesystems #####
+
+[all]
+# Mesa
+#dtoverlay=vc4-kms-v3d,cma-256
+#mask_gpu_interrupt0=0x400
+#dtoverlay=vc4-kms-kippah-7inch
+# Swiftshader
+dtoverlay=dpi18
+
+dtoverlay=goodix-7-acme
+dtoverlay=disable-wifi
+dtoverlay=disable-bt
+
+#Ignore the HDMI cable hotplug (to avoid the delay at startup)
+hdmi_ignore_hotplug=1
+
+dtoverlay=pi3-disable-bt
+enable_uart=1
+dtparam=uart1=on
+dtoverlay=uart1,txd1_pin=32,rxd1_pin=33
+
+# Configure the uart0 on the console port hardware
+# This port is managed by the SOC using the miniUART and located on Linux on /dev/ttyS0
+force_turbo=1
+dtoverlay=uart0,txd0_pin=36,rxd0_pin=37,pin_func=6
+
+# Activates the I2C 1 port on GPIO44 and 45 to talk with the
+# touch screen controller end camera crypto-chip
+dtoverlay=i2c1-bcm2708,sda1_pin=44,scl1_pin=45,pin_func=6
+dtoverlay=i2c1-rtc,pcf8523
+#dtparam=i2c_arm=on,i2c_baudrate=400000
+
+## Enable the DPI port to talk with the TFT display
+overscan_left=0
+overscan_right=0
+overscan_top=0
+overscan_bottom=0
+framebuffer_width=800
+framebuffer_height=480
+enable_dpi_lcd=1
+display_default_lcd=1
+dpi_group=2
+dpi_mode=87
+dpi_output_format=0x6f005
+dpi_timings=800 0 40 48 88 480 0 13 3 32 0 0 0 60 0 32000000 6
+
+start_x=1
+gpu_mem=128
+
+# Change the pull on (input) pins 27 and 35
+gpio=27,35=pu
+
+# Enable second I2C Bus 3
+dtoverlay=i2c-gpio,bus=3,i2c_gpio_delay_us=1,i2c_gpio_sda=35,i2c_gpio_scl=27
+
+dtparam=audio=off
+dtoverlay=i2s-gpio28-31
+dtoverlay=hifiberry-dacplus
+
+# GPIO used for check CM3 Panel boot ok
+#gpio=26=op,pd
+
+dtparam=i2c_arm=on
+dtparam=i2c=on
+dtparam=i2c_arm_baudrate=100000

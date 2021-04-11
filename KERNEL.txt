@@ -1,0 +1,12 @@
+# compile an updated kernel
+git clone https://github.com/lineage-rpi/android_kernel_brcm_rpi.git
+cd android_kernel_brcm_rpi/
+git checkout lineage-17.1-4.19
+cp ../kernel.defconfig .config
+ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make oldconfig
+ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make zImage
+ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make dtbs
+cp arch/arm/boot/zImage arch/arm/boot/dts/bcm2710-rpi-cm3.dtb ../patches/boot/
+cd ..
+# compile the Goodix touchscreen overlay
+dtc goodix-7-acme-overlay.dts > patches/boot/overlays/goodix-7-acme.dtbo
